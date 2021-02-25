@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
-import { fetch } from './GeoJson';
-import { createEntityData, createGeoData, pointInPolygonSearchCount, entityInPolygonSearch,reduceEntityDictToMetric, reduceEntityDictToMetricInPlace,  DataMetrics } from './Data';
+import { fetch } from '../services/GeoJson';
+import { createEntityData, createGeoData, pointInPolygonSearchCount, entityInPolygonSearch,reduceEntityDictToMetric, reduceEntityDictToMetricInPlace,  DataMetrics } from '../services/Data';
 import MetricSelect from './MetricSelect';
 import Loader from './Loading/Loader';
 

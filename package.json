@@ -1,5 +1,5 @@
 {
-  "name": "data-map-playground",
+  "name": "d3-interactive-datamap",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -20,7 +20,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "publish": "rm -rf dist && mkdir dist && babel src/DataMap -d dist --copy-files"
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +40,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.13.0",
+    "@babel/preset-react": "^7.12.13"
   }
 }

@@ -1,6 +1,6 @@
 import 'normalize.css';
 import './App.css';
-import DataMap from './DataMap/DataMap';
+import DataMap from './DataMap/components/DataMap';
 
 function App() {
   return (

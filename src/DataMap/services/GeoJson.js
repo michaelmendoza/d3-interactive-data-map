@@ -1,6 +1,6 @@
 
-import countriesByContinent from './json/country-by-continent.json';
-import countriesGeoJson from './json/world.json';
+import countriesByContinent from '../json/country-by-continent.json';
+import countriesGeoJson from '../json/world.json';
 
 export function fetch() {    
     let filteredGeoJsons = filterCountryByContinent("Africa", countriesByContinent, countriesGeoJson);
