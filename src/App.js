@@ -1,3 +1,4 @@
+import 'normalize.css';
 import './App.css';
 import Map from './DataMap/Map';
 

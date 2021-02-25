@@ -1,18 +1,33 @@
 import * as d3 from 'd3';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { fetch } from './GeoJson';
 import { createEntityData, createGeoData, pointInPolygonSearchCount, entityInPolygonSearch,reduceEntityDictToMetric, reduceEntityDictToMetricInPlace,  DataMetrics } from './Data';
+import MetricSelect from './MetricSelect';
+import Loader from './Loading/Loader';
 
 const Map = (props) => {
-    
-    const d3Container = useRef(null);
-    const fillColor = "#4682b4"; //'#69b3a2'; 
-    const fillColor2 =  '#69b3a2'; //'#DB6F68'; //"#4682b4"; // #DB6F68
-    const strokeColor = '#222222'; 
-    const pointRadius = 3;
 
-    useEffect(() => {        
-        var svg = d3.select(d3Container.current);
+    const [metric, setMetric] = useState(DataMetrics.Count);
+    const [mapData, setMapData] = useState(null);
+    const [svgReady, setSvgReady] = useState(false);
+    
+    useEffect(()=> {
+        updateMap();
+    }, [metric])
+    
+    const updateMap = () => {
+        setSvgReady(false);
+
+        const fetch = async () => {
+            const result = await fetchMapData(metric);
+            setMapData(result);
+            //drawMap(mapData);
+            setSvgReady(true);
+        }
+        fetch();
+    }
+
+    const reduceEntityDataToMapData = (metric) => {
         let geoData = fetch();
         //let pointData = createGeoData(1000);
         let pointData = createEntityData(1000000);
@@ -21,12 +36,46 @@ const Map = (props) => {
         //let pointsInPolygons = pointInPolygonSearchCount(data, points);
         let pointsInPolygons = entityInPolygonSearch(geoData, pointData);
         //pointsInPolygons = reduceEntityDictToMetric(pointsInPolygons, 'a', DataMetrics.Sum);
-        pointsInPolygons = reduceEntityDictToMetricInPlace(pointsInPolygons, 'a', DataMetrics.Sum);
+        pointsInPolygons = reduceEntityDictToMetricInPlace(pointsInPolygons, 'a', metric); 
         
         let delta = Date.now() - start
         console.log(pointsInPolygons);
         console.log(delta / 1000);
-        
+
+        return {geoData, pointData, pointsInPolygons};
+    }
+
+    const fetchMapData = async (metric) => { 
+        return new Promise((resolve, reject) => {
+            resolve(reduceEntityDataToMapData(metric));
+        });
+    };
+
+    return (
+        <div> 
+            <MetricSelect metric={metric} setMetric={setMetric}></MetricSelect> 
+            { 
+                svgReady ? <MapSVG data={mapData} width={props.width} height={props.height}></MapSVG> : <Loader></Loader>
+            }
+        </div>
+    )
+}
+
+const MapSVG = (props) => {
+    const d3Container = useRef(null);
+    const fillColor = "#4682b4"; //'#69b3a2'; 
+    const fillColor2 =  '#69b3a2'; //'#DB6F68'; //"#4682b4"; // #DB6F68
+    const strokeColor = '#222222'; 
+    const pointRadius = 3;
+
+    useEffect(()=> {
+        drawMap();
+    })
+
+    const drawMap = () => {
+        const {geoData, pointData, pointsInPolygons} = props.data;
+
+        var svg = d3.select(d3Container.current);
         var max = 0;
         var keys = Object.keys(pointsInPolygons);
         keys.forEach(function(key){
@@ -85,37 +134,34 @@ const Map = (props) => {
             })
         
             /*
-        let g = svg.append("g")
-        const delay = 1000 / pointData.length;
-        g.selectAll("circle")
-            .data(pointData)
-            .enter().append("circle")
-            .attr('r',0)
-            .attr('cx',function(d) { return projection(d.geo)[0]})
-            .attr('cy',function(d) { return projection(d.geo)[1]})
-            .attr('opacity', 0.2)
-            .style("fill", fillColor)
-            .style("stroke", strokeColor)
-            .on("mouseover",function(d) {
-                d3.select(this)
-                    .style("fill", "gray")
-              })
-              .on("mouseout",function(d){
-                d3.select(this)
-                    .style("fill", fillColor)
-            })
-            .transition()        
-            .duration(800)
-            .attr("r", pointRadius)
-            .delay(function(d,i){ return(i * delay)})
+            let g = svg.append("g")
+            const delay = 1000 / pointData.length;
+            g.selectAll("circle")
+                .data(pointData)
+                .enter().append("circle")
+                .attr('r',0)
+                .attr('cx',function(d) { return projection(d.geo)[0]})
+                .attr('cy',function(d) { return projection(d.geo)[1]})
+                .attr('opacity', 0.2)
+                .style("fill", fillColor)
+                .style("stroke", strokeColor)
+                .on("mouseover",function(d) {
+                    d3.select(this)
+                        .style("fill", "gray")
+                })
+                .on("mouseout",function(d){
+                    d3.select(this)
+                        .style("fill", fillColor)
+                })
+                .transition()        
+                .duration(800)
+                .attr("r", pointRadius)
+                .delay(function(d,i){ return(i * delay)})
             */
-    }, [])
-    
+    }
+
     return (
-        <div> 
-            <svg ref={d3Container} width={props.width} height={props.height}>
-            </svg>
-        </div>
+        <svg ref={d3Container} width={props.width} height={props.height}></svg>
     )
 }
 

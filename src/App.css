@@ -12,6 +12,10 @@
   color: white;
 }
 
+.metric-select {
+  margin: 1em 0;
+}
+
 .tooltip {	
   margin: auto;
   position: absolute;			
