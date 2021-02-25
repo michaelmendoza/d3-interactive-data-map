@@ -22,12 +22,12 @@ export const median = (x) => {
 
 export const variance = (x) => {
     if(x.length === 0) return 0;
-    var mean = this.mean(x);
-    var variance = x.reduce(function(a, b) { return a + ((b - mean) * (b - mean)) });
+    var _mean = mean(x);
+    var variance = x.reduce(function(a, b) { return a + ((b - _mean) * (b - _mean)) });
     variance = variance / x.length;
     return variance;
 }
 
 export const std = (x) => {
-    return Math.sqrt(this.variance(x));
+    return Math.sqrt(variance(x));
 }

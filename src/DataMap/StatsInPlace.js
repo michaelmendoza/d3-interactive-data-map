@@ -22,18 +22,18 @@ export const median = (x, attr) => {
         return a.attr[attr] - fn(b, attr);
     });
     const mid = Math.ceil(x.length / 2);
-    const median = (x.length / 2) % 2 === 0 ? (sortedArray[mid] + sortedArray[mid - 1]) / 2 : sortedArray[mid - 1];
+    const median = (x.length / 2) % 2 === 0 ? (fn(sortedArray[mid], attr) + fn(sortedArray[mid - 1], attr)) / 2 : fn(sortedArray[mid - 1], attr);
     return median;
 }
 
 export const variance = (x, attr) => {
     if(x.length === 0) return 0;
-    var mean = this.mean(x, attr);
-    var variance = x.reduce(function(a, b) { return a + ((fn(b, attr) - mean) * (fn(b, attr) - mean)) }, 0);
+    var _mean = mean(x, attr);
+    var variance = x.reduce(function(a, b) { return a + ((fn(b, attr) - _mean) * (fn(b, attr) - _mean)) }, 0);
     variance = variance / x.length;
     return variance;
 }
 
 export const std = (x, attr) => {
-    return Math.sqrt(this.variance(x, attr));
+    return Math.sqrt(variance(x, attr));
 }
