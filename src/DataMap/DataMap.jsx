@@ -5,12 +5,12 @@ import { createEntityData, createGeoData, pointInPolygonSearchCount, entityInPol
 import MetricSelect from './MetricSelect';
 import Loader from './Loading/Loader';
 
-const Map = (props) => {
+const DataMap = (props) => {
 
     const [metric, setMetric] = useState(DataMetrics.Count);
     const [mapData, setMapData] = useState(null);
     const [svgReady, setSvgReady] = useState(false);
-    
+
     useEffect(()=> {
         updateMap();
     }, [metric])
@@ -165,4 +165,4 @@ const MapSVG = (props) => {
     )
 }
 
-export default Map;
+export default DataMap;

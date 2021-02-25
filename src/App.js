@@ -1,6 +1,6 @@
 import 'normalize.css';
 import './App.css';
-import Map from './DataMap/Map';
+import DataMap from './DataMap/DataMap';
 
 function App() {
   return (
@@ -9,7 +9,7 @@ function App() {
         Interactive Map Playground 
       </header>
       <section>
-        <Map width={500} height={500}></Map>
+        <DataMap width={500} height={500}></DataMap>
       </section>
     </div>
   );
