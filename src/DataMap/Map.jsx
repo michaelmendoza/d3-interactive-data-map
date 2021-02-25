@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef } from 'react';
 import { fetch } from './GeoJson';
-import { mockData, polygonSearch } from './Data';
+import { createEntityData, createGeoData, pointInPolygonSearchCount, entityInPolygonSearch,reduceEntityDictToMetric,  DataMetrics } from './Data';
 
 const Map = (props) => {
     
@@ -13,10 +13,15 @@ const Map = (props) => {
 
     useEffect(() => {        
         var svg = d3.select(d3Container.current);
-        let data = fetch();
-        let points = mockData(1000);
+        let geoData = fetch();
+        //let pointData = createGeoData(1000);
+        let pointData = createEntityData(1000000);
         let start = Date.now();
-        let pointsInPolygons = polygonSearch(data, points);
+        
+        //let pointsInPolygons = pointInPolygonSearchCount(data, points);
+        let pointsInPolygons = entityInPolygonSearch(geoData, pointData);
+        pointsInPolygons = reduceEntityDictToMetric(pointsInPolygons, 'a', DataMetrics.Sum);
+        
         let delta = Date.now() - start
         console.log(pointsInPolygons);
         console.log(delta / 1000);
@@ -45,11 +50,11 @@ const Map = (props) => {
         var path = d3.geoPath()
             .projection(projection);
         
-        console.log(data.features);
+        console.log(geoData.features);
 
         let mapG = svg.append("g")
         mapG.selectAll("path")
-            .data(data.features)
+            .data(geoData.features)
             .enter()
             .append("path")
             .attr("d", path)
@@ -78,14 +83,15 @@ const Map = (props) => {
                 .style("opacity", 0); 
             })
         
+            /*
         let g = svg.append("g")
-        const delay = 1000 / points.length;
+        const delay = 1000 / pointData.length;
         g.selectAll("circle")
-            .data(points)
+            .data(pointData)
             .enter().append("circle")
             .attr('r',0)
-            .attr('cx',function(d) { return projection(d)[0]})
-            .attr('cy',function(d) { return projection(d)[1]})
+            .attr('cx',function(d) { return projection(d.geo)[0]})
+            .attr('cy',function(d) { return projection(d.geo)[1]})
             .attr('opacity', 0.2)
             .style("fill", fillColor)
             .style("stroke", strokeColor)
@@ -101,7 +107,7 @@ const Map = (props) => {
             .duration(800)
             .attr("r", pointRadius)
             .delay(function(d,i){ return(i * delay)})
-            
+            */
     }, [])
     
     return (
