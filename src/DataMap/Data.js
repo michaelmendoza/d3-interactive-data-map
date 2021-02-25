@@ -1,5 +1,6 @@
 import PolygonLookup from 'polygon-lookup';
 import * as Stats from './Stats';
+import * as StatsInPlace from './StatsInPlace';
 
 export const DataMetrics = {
     Count : "Count",
@@ -134,6 +135,23 @@ export const calculateStat = (data, metric) => {
     }
 }
 
+export const calculateStatInPlace = (data, attribute, metric) => {
+    switch(metric) {
+        case DataMetrics.Count:
+            return data.length;
+        case DataMetrics.Sum:
+            return StatsInPlace.sum(data, attribute);
+        case DataMetrics.Mean:
+            return StatsInPlace.mean(data, attribute);
+        case DataMetrics.Median:
+            return StatsInPlace.median(data, attribute);
+        case DataMetrics.StdDev:
+            return StatsInPlace.std(data, attribute);
+        default:
+            return 0;
+    }
+}
+
 export const entityDataToDataArray = (data, attribute) => {
     const dataArray = [];
     data.forEach((item)=> {  
@@ -151,6 +169,12 @@ export const reduceEntityDictToMetric = (dict, attribute, metric) => {
     return result;
 }
 
-export const entityInPolygonSearcyByMetric  = (features, points, metric) => {
-
+// Note: 1.457s to 1.212s (16.8% decrease) by calculating in place for N = 1000000
+export const reduceEntityDictToMetricInPlace = (dict, attribute, metric) => {
+    const keys = Object.keys(dict);
+    let result = {}
+    keys.forEach((key)=> {
+        result[key] = calculateStatInPlace(dict[key], attribute, metric);
+    })
+    return result;
 }

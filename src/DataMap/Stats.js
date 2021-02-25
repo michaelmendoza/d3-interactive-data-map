@@ -31,15 +31,3 @@ export const variance = (x) => {
 export const std = (x) => {
     return Math.sqrt(this.variance(x));
 }
-
-export const covariance = (x, y) => {
-    if(x.length === 0) return 0;
-    var covariance = 0;
-    var mean_x = this.mean(x);
-    var mean_y = this.mean(y);
-    for(var i = 0; i < x.length; i++) {
-        covariance += (x[i] - mean_x) * (x[i] - mean_y);
-    }
-    covariance = covariance / x.length;
-    return covariance;
-}

@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef } from 'react';
 import { fetch } from './GeoJson';
-import { createEntityData, createGeoData, pointInPolygonSearchCount, entityInPolygonSearch,reduceEntityDictToMetric,  DataMetrics } from './Data';
+import { createEntityData, createGeoData, pointInPolygonSearchCount, entityInPolygonSearch,reduceEntityDictToMetric, reduceEntityDictToMetricInPlace,  DataMetrics } from './Data';
 
 const Map = (props) => {
     
@@ -20,7 +20,8 @@ const Map = (props) => {
         
         //let pointsInPolygons = pointInPolygonSearchCount(data, points);
         let pointsInPolygons = entityInPolygonSearch(geoData, pointData);
-        pointsInPolygons = reduceEntityDictToMetric(pointsInPolygons, 'a', DataMetrics.Sum);
+        //pointsInPolygons = reduceEntityDictToMetric(pointsInPolygons, 'a', DataMetrics.Sum);
+        pointsInPolygons = reduceEntityDictToMetricInPlace(pointsInPolygons, 'a', DataMetrics.Sum);
         
         let delta = Date.now() - start
         console.log(pointsInPolygons);
