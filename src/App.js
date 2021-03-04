@@ -1,6 +1,7 @@
 import 'normalize.css';
-import './App.css';
+import './App.scss';
 import DataMap from './DataMap/components/DataMap';
+import PointMap from './DataMap/components/PointMap';
 
 function App() {
   return (
@@ -8,8 +9,9 @@ function App() {
       <header className="App-header">
         Interactive Map Playground 
       </header>
-      <section>
-        <DataMap width={500} height={500}></DataMap>
+      <section className="layout-row-center">
+        <PointMap max={2000} width={500} height={500}></PointMap>
+        <DataMap width={500} height={500}></DataMap> 
       </section>
     </div>
   );

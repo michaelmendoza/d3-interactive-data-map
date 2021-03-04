@@ -38,7 +38,7 @@ export const createGeoData = (N) => {
 
 export const createEntityData = (N) => {
     const geoCenter = [15, 5];
-
+    
     // Date Ranges for Uniformly Distrubuted Dates between startTime and endTime 
     const daysInTimeWindow = 30;
     const milliSecondsInDay = 1000 * 60 * 60 * 24;

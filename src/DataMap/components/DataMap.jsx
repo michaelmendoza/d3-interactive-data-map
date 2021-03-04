@@ -31,7 +31,7 @@ const DataMap = (props) => {
     const reduceEntityDataToMapData = (metric) => {
         let geoData = fetch();
         //let pointData = createGeoData(1000);
-        let pointData = createEntityData(100000);
+        let pointData = props.entityData ? props.entityData : createEntityData(100000);
         let start = Date.now();
         
         //let pointsInPolygons = pointInPolygonSearchCount(data, points);
@@ -94,8 +94,9 @@ const MapSVG = (props) => {
 
         //Define map projection
         var projection = d3.geoMercator()
-            .translate([props.width/2, props.height/2])
-            .scale([250]);
+            .translate([props.width/2, props.height/2 + 20])
+            .rotate([-18, 0, 0])
+            .scale([325]);
 
         //Define path generator
         var path = d3.geoPath()
