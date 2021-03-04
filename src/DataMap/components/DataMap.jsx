@@ -4,6 +4,7 @@ import { fetch } from '../services/GeoJson';
 import { createEntityData, createGeoData, pointInPolygonSearchCount, entityInPolygonSearch,reduceEntityDictToMetric, reduceEntityDictToMetricInPlace,  DataMetrics } from '../services/Data';
 import MetricSelect from './MetricSelect';
 import Loader from './Loading/Loader';
+import '../styles/DataMap.scss';
 
 const DataMap = (props) => {
 
@@ -30,7 +31,7 @@ const DataMap = (props) => {
     const reduceEntityDataToMapData = (metric) => {
         let geoData = fetch();
         //let pointData = createGeoData(1000);
-        let pointData = createEntityData(1000000);
+        let pointData = createEntityData(100000);
         let start = Date.now();
         
         //let pointsInPolygons = pointInPolygonSearchCount(data, points);
@@ -52,7 +53,7 @@ const DataMap = (props) => {
     };
 
     return (
-        <div> 
+        <div className='data-map'> 
             <MetricSelect metric={metric} setMetric={setMetric}></MetricSelect> 
             { 
                 svgReady ? <MapSVG data={mapData} width={props.width} height={props.height}></MapSVG> : <Loader></Loader>
