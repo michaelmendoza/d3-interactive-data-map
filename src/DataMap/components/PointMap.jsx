@@ -4,6 +4,7 @@ import { fetch } from '../services/GeoJson';
 import { createEntityData } from '../services/Data';
 import Loader from './Loading/Loader';
 import '../styles/DataMap.scss';
+import { MapConstants } from './MapConstants';
 
 const PointMap = (props) => {
 
@@ -12,7 +13,7 @@ const PointMap = (props) => {
 
     useEffect(()=> {
         updateMap();
-    }, [])
+    }, [props])
     
     const updateMap = () => {
         setSvgReady(false);
@@ -26,8 +27,8 @@ const PointMap = (props) => {
     }
     
     const reduceEntityDataToMapData = () => {
-        let geoData = fetch();
-        let pointData = props.entityData ? props.entityData : createEntityData(100000);
+        let geoData = fetch(props.continent);
+        let pointData = props.entityData ? props.entityData : createEntityData(100000, props.continent);
         pointData = pointData.filter((point, index)=> index < props.max )
         return {geoData, pointData};
     }
@@ -38,10 +39,13 @@ const PointMap = (props) => {
         });
     };
 
+    const { continent, width, height} = props;
+    
     return (
+        
         <div className='point-map'> 
             { 
-                svgReady ? <MapGraphic data={mapData} width={props.width} height={props.height}></MapGraphic> : <Loader></Loader>
+                svgReady ? <MapGraphic data={mapData} continent={continent} width={width} height={height}></MapGraphic> : <Loader></Loader>
             }
         </div>
     )
@@ -74,9 +78,10 @@ const MapGraphic = (props) => {
 
         //Define map projection
         var projection = d3.geoMercator()
-            .translate([props.width/2, props.height/2 + 20])
-            .rotate([-18, 0, 0])
-            .scale([325]);
+            .translate([props.width/2, props.height/2])
+            .center(MapConstants[props.continent].center)
+            .rotate(MapConstants[props.continent].rotate)
+            .scale(MapConstants[props.continent].scale);
 
         //Define path generator
         var path = d3.geoPath()

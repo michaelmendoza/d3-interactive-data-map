@@ -4,6 +4,7 @@ import { fetch } from '../services/GeoJson';
 import { createEntityData, createGeoData, pointInPolygonSearchCount, entityInPolygonSearch,reduceEntityDictToMetric, reduceEntityDictToMetricInPlace,  DataMetrics } from '../services/Data';
 import MetricSelect from './MetricSelect';
 import Loader from './Loading/Loader';
+import { MapConstants } from './MapConstants';
 import '../styles/DataMap.scss';
 
 const DataMap = (props) => {
@@ -14,7 +15,7 @@ const DataMap = (props) => {
 
     useEffect(()=> {
         updateMap();
-    }, [metric])
+    }, [metric, props])
     
     const updateMap = () => {
         setSvgReady(false);
@@ -29,9 +30,9 @@ const DataMap = (props) => {
     }
 
     const reduceEntityDataToMapData = (metric) => {
-        let geoData = fetch();
+        let geoData = fetch(props.continent);
         //let pointData = createGeoData(1000);
-        let pointData = props.entityData ? props.entityData : createEntityData(100000);
+        let pointData = props.entityData ? props.entityData : createEntityData(100000, props.continent);
         let start = Date.now();
         
         //let pointsInPolygons = pointInPolygonSearchCount(data, points);
@@ -56,7 +57,7 @@ const DataMap = (props) => {
         <div className='data-map'> 
             <MetricSelect metric={metric} setMetric={setMetric}></MetricSelect> 
             { 
-                svgReady ? <MapSVG data={mapData} width={props.width} height={props.height}></MapSVG> : <Loader></Loader>
+                svgReady ? <MapSVG data={mapData} continent={props.continent} width={props.width} height={props.height}></MapSVG> : <Loader></Loader>
             }
         </div>
     )
@@ -94,9 +95,10 @@ const MapSVG = (props) => {
 
         //Define map projection
         var projection = d3.geoMercator()
-            .translate([props.width/2, props.height/2 + 20])
-            .rotate([-18, 0, 0])
-            .scale([325]);
+            .translate([props.width/2, props.height/2])
+            .center(MapConstants[props.continent].center)
+            .rotate(MapConstants[props.continent].rotate)
+            .scale(MapConstants[props.continent].scale);
 
         //Define path generator
         var path = d3.geoPath()

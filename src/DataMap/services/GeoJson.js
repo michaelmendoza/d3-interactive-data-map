@@ -2,8 +2,8 @@
 import countriesByContinent from '../json/country-by-continent.json';
 import countriesGeoJson from '../json/world.json';
 
-export function fetch() {    
-    let filteredGeoJsons = filterCountryByContinent("Africa", countriesByContinent, countriesGeoJson);
+export function fetch(continent = "Africa") {    
+    let filteredGeoJsons = filterCountryByContinent(continent, countriesByContinent, countriesGeoJson);
     return filteredGeoJsons;
 }
 
@@ -29,6 +29,7 @@ const filterCountryByContinent = (continent, countriesByContinent, countriesGeoJ
     let features = countriesGeoJson.features.filter((item) => {
         return GetContinentFromCountry(item.properties.name) == continent;
     })
+    features = continent == "World" ? countriesGeoJson.features : features;
 
     // Returns a filtered geoJson 
     return { 

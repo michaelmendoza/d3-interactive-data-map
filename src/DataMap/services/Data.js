@@ -1,6 +1,7 @@
 import PolygonLookup from 'polygon-lookup';
 import * as Stats from './Stats';
 import * as StatsInPlace from './StatsInPlace';
+import { MapConstants } from '../components/MapConstants';
 
 export const DataMetrics = {
     Count : "Count",
@@ -31,14 +32,16 @@ export const range = (start, end) => {
     return Array.from({ length }, (_, i) => start + i);
 }
 
-export const createGeoData = (N) => {
-    const geoCenter = [15, 5];
-    return Array.from({ length:N }, (_, i) => randomCircle(geoCenter, 40));
+export const createGeoData = (N, geoName = 'Africa') => {
+    const geoCenter = MapConstants[geoName].center; 
+    const radius = MapConstants[geoName].radius; 
+    return Array.from({ length:N }, (_, i) => randomCircle(geoCenter, radius));
 }
 
-export const createEntityData = (N) => {
-    const geoCenter = [15, 5];
-    
+export const createEntityData = (N, geoName = 'Africa') => {
+    const geoCenter = MapConstants[geoName].center; 
+    const radius = MapConstants[geoName].radius; 
+
     // Date Ranges for Uniformly Distrubuted Dates between startTime and endTime 
     const daysInTimeWindow = 30;
     const milliSecondsInDay = 1000 * 60 * 60 * 24;
@@ -49,7 +52,7 @@ export const createEntityData = (N) => {
     const ids = range(0, N);
     const data = ids.map((id) => {
         const name = 'Lightning';
-        const geo = randomCircle(geoCenter, 40);
+        const geo = randomCircle(geoCenter, radius);
         const attr = { a:random(0, 123), b:random(0, 50), c:random(0, 1000), d:random(0, 250)}
         const time = new Date(random(startTime, endTime))
         return { id:id, name:name, geo:geo, attr:attr, time:time }
