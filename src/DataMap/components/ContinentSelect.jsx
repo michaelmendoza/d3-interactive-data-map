@@ -8,7 +8,9 @@ export const Continents = {
     NorthAmerica: "North America",
     Oceania: "Oceania",
     SouthAmerica: "South America",
-    World: "World"
+    World: "World",
+    USACounties: "USA Counties",
+    USAStates: "USA States"
 }
 
 const ContinentSelect = (props) => {
@@ -25,7 +27,7 @@ const ContinentSelect = (props) => {
         <div className='Continent-select'>
             <select onChange={handleChange} value={continent}>
                 { Object.keys(Continents).map((c, i)=> {
-                    return <option value={ Continents[c] }> {Continents[c]} </option>
+                    return <option key={Continents[c]} value={ Continents[c] }> {Continents[c]} </option>
                 })}
             </select>
         </div>

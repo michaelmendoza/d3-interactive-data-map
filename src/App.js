@@ -4,6 +4,7 @@ import './App.scss';
 import ContinentSelect, { Continents } from './DataMap/components/ContinentSelect';
 import DataMap from './DataMap/components/DataMap';
 import PointMap from './DataMap/components/PointMap';
+import StateSelect from './DataMap/components/StateSelect';
 
 
 const reducer = (state, action) => {
@@ -30,8 +31,8 @@ function App() {
           <ContinentSelect continent={state.continent} setContinent={(d)=>{ dispatch({type:"updateContinent", continent:d})}}></ContinentSelect>
         </div>
         <div className="layout-row-center">
-          <PointMap continent={state.continent} max={2000} width={500} height={500}></PointMap>
-          <DataMap continent={state.continent} width={500} height={500}></DataMap> 
+          <PointMap map={state.continent} max={1000} width={500} height={500}></PointMap>
+          <DataMap map={state.continent} width={500} height={500}></DataMap> 
         </div>
 
       </section>

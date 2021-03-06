@@ -1,10 +1,29 @@
 
 import countriesByContinent from '../json/country-by-continent.json';
 import countriesGeoJson from '../json/world.json';
+import usaGeoJson from '../json/world/counties-10m.json'; //https://github.com/topojson/us-atlas#us/10m.json
+import * as topojson from 'topojson';
+
+const cache = {};
 
 export function fetch(continent = "Africa") {    
+    if(continent == "USA Counties")
+        return getUSACountyGeoJson();
+    if(continent == "USA States")
+        return getUSAStatesGeoJson();
+    
     let filteredGeoJsons = filterCountryByContinent(continent, countriesByContinent, countriesGeoJson);
     return filteredGeoJsons;
+}
+
+const getUSACountyGeoJson = () => {
+    const topology = usaGeoJson;
+    return topojson.feature(topology, topology.objects.counties);
+}
+
+const getUSAStatesGeoJson = () => {
+    const topology = usaGeoJson;
+    return topojson.feature(topology, topology.objects.states);
 }
 
 const filterCountryByContinent = (continent, countriesByContinent, countriesGeoJson) => {

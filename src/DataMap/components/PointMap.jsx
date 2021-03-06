@@ -27,9 +27,9 @@ const PointMap = (props) => {
     }
     
     const reduceEntityDataToMapData = () => {
-        let geoData = fetch(props.continent);
-        let pointData = props.entityData ? props.entityData : createEntityData(100000, props.continent);
-        pointData = pointData.filter((point, index)=> index < props.max )
+        let geoData = fetch(props.map);
+        let pointData = props.entityData ? props.entityData : createEntityData(100000, props.map);
+        pointData = props.max ? pointData.filter((point, index)=> index < props.max ) : pointData;
         return {geoData, pointData};
     }
 
@@ -39,13 +39,13 @@ const PointMap = (props) => {
         });
     };
 
-    const { continent, width, height} = props;
-    
+    const { map, width, height} = props;
+
     return (
         
         <div className='point-map'> 
             { 
-                svgReady ? <MapGraphic data={mapData} continent={continent} width={width} height={height}></MapGraphic> : <Loader></Loader>
+                svgReady ? <MapGraphic data={mapData} map={map} width={width} height={height}></MapGraphic> : <Loader></Loader>
             }
         </div>
     )
@@ -79,9 +79,9 @@ const MapGraphic = (props) => {
         //Define map projection
         var projection = d3.geoMercator()
             .translate([props.width/2, props.height/2])
-            .center(MapConstants[props.continent].center)
-            .rotate(MapConstants[props.continent].rotate)
-            .scale(MapConstants[props.continent].scale);
+            .center(MapConstants[props.map].center)
+            .rotate(MapConstants[props.map].rotate)
+            .scale(MapConstants[props.map].scale);
 
         //Define path generator
         var path = d3.geoPath()
@@ -128,7 +128,7 @@ const MapGraphic = (props) => {
                 canvas.style.width = props.width + 'px';
                 canvas.style.height = props.height + 'px'; 
                 context.clearRect(0, 0,props.width, props.height);
-                context.globalAlpha = 1;
+                context.globalAlpha = 0.8;
                 context.setTransform(scale, 0, 0, scale, 0, 0);
                 
                 pointData.forEach((d) => {

@@ -30,9 +30,9 @@ const DataMap = (props) => {
     }
 
     const reduceEntityDataToMapData = (metric) => {
-        let geoData = fetch(props.continent);
+        let geoData = fetch(props.map);
         //let pointData = createGeoData(1000);
-        let pointData = props.entityData ? props.entityData : createEntityData(100000, props.continent);
+        let pointData = props.entityData ? props.entityData : createEntityData(100000, props.map);
         let start = Date.now();
         
         //let pointsInPolygons = pointInPolygonSearchCount(data, points);
@@ -53,11 +53,13 @@ const DataMap = (props) => {
         });
     };
 
+    const { map, width, height} = props;
+
     return (
         <div className='data-map'> 
             <MetricSelect metric={metric} setMetric={setMetric}></MetricSelect> 
             { 
-                svgReady ? <MapSVG data={mapData} continent={props.continent} width={props.width} height={props.height}></MapSVG> : <Loader></Loader>
+                svgReady ? <MapSVG data={mapData} map={map} width={width} height={height}></MapSVG> : <Loader></Loader>
             }
         </div>
     )
@@ -96,9 +98,9 @@ const MapSVG = (props) => {
         //Define map projection
         var projection = d3.geoMercator()
             .translate([props.width/2, props.height/2])
-            .center(MapConstants[props.continent].center)
-            .rotate(MapConstants[props.continent].rotate)
-            .scale(MapConstants[props.continent].scale);
+            .center(MapConstants[props.map].center)
+            .rotate(MapConstants[props.map].rotate)
+            .scale(MapConstants[props.map].scale);
 
         //Define path generator
         var path = d3.geoPath()
