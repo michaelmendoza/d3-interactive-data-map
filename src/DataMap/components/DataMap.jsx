@@ -6,6 +6,7 @@ import MetricSelect from './MetricSelect';
 import Loader from './Loading/Loader';
 import { MapConstants } from './MapConstants';
 import '../styles/DataMap.scss';
+import { MapOptions } from './MapSelect';
 
 const DataMap = (props) => {
 
@@ -102,6 +103,12 @@ const MapSVG = (props) => {
             .rotate(MapConstants[props.map].rotate)
             .scale(MapConstants[props.map].scale);
 
+        if(props.map == MapOptions.USAStates || props.map == MapOptions.USACounties) {
+            projection = d3.geoAlbers()
+                .scale(700)
+                .center([24, 38.7]);    
+        }
+
         //Define path generator
         var path = d3.geoPath()
             .projection(projection);
@@ -117,6 +124,8 @@ const MapSVG = (props) => {
             .style("stroke-dasharray", ("3, 3"))
             .style("fill", (d)=> { return color(pointsInPolygons[d.properties.name]); }) //"steelblue")
             .style("stroke", "white")
+            .style("stroke-width", 0.25)
+            .style("opacity", 0.8)
             .on("mouseover",function(e, d) {
                 d3.select(this)
                 .style("fill", "gray")

@@ -10,3 +10,8 @@ export const MapConstants = {
     "USA Counties": { center: [-100, 40], rotate: [0,0,0], scale: [220], radius: 10 },
     "USA States": { center: [-100, 40], rotate: [0,0,0], scale: [220], radius: 10 },
 }
+
+export const MapTypes = {
+    DataMap: 'DataMap',
+    PointMap: 'PointMap'
+}

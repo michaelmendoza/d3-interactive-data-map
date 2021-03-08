@@ -5,6 +5,7 @@ import { createEntityData } from '../services/Data';
 import Loader from './Loading/Loader';
 import '../styles/DataMap.scss';
 import { MapConstants } from './MapConstants';
+import { MapOptions } from './MapSelect';
 
 const PointMap = (props) => {
 
@@ -82,6 +83,13 @@ const MapGraphic = (props) => {
             .center(MapConstants[props.map].center)
             .rotate(MapConstants[props.map].rotate)
             .scale(MapConstants[props.map].scale);
+
+        if(props.map == MapOptions.USAStates || props.map == MapOptions.USACounties) {
+            projection = d3.geoAlbers()
+                .scale(700)
+                .center([24, 38.7]);
+                
+        }
 
         //Define path generator
         var path = d3.geoPath()

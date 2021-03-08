@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export const Continents = {
+export const MapOptions = {
     Africa: "Africa",
     Asia: "Asia",
     Antarctica: "Antarctica",
@@ -13,7 +13,7 @@ export const Continents = {
     USAStates: "USA States"
 }
 
-const ContinentSelect = (props) => {
+const MapSelect = (props) => {
 
     const [continent, setContinent] = useState(props.continent);
 
@@ -26,12 +26,12 @@ const ContinentSelect = (props) => {
     return (
         <div className='Continent-select'>
             <select onChange={handleChange} value={continent}>
-                { Object.keys(Continents).map((c, i)=> {
-                    return <option key={Continents[c]} value={ Continents[c] }> {Continents[c]} </option>
+                { Object.keys(MapOptions).map((c, i)=> {
+                    return <option key={MapOptions[c]} value={ MapOptions[c] }> {MapOptions[c]} </option>
                 })}
             </select>
         </div>
     )
 }
 
-export default ContinentSelect;
+export default MapSelect;
