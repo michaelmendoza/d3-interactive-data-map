@@ -1,12 +1,12 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
-import { fetch } from '../services/GeoJson';
-import { createEntityData, createGeoData, pointInPolygonSearchCount, entityInPolygonSearch,reduceEntityDictToMetric, reduceEntityDictToMetricInPlace,  DataMetrics } from '../services/Data';
+import { createDataMapData } from '../services/Data';
 import MetricSelect from './MetricSelect';
 import Loader from './Loading/Loader';
 import { MapConstants } from './MapConstants';
-import '../styles/DataMap.scss';
 import { MapOptions } from './MapSelect';
+import { DataMetrics } from '../services/Stats';
+import '../styles/DataMap.scss';
 
 const DataMap = (props) => {
 
@@ -24,33 +24,14 @@ const DataMap = (props) => {
         const fetch = async () => {
             const result = await fetchMapData(metric);
             setMapData(result);
-            //drawMap(mapData);
             setSvgReady(true);
         }
         fetch();
     }
 
-    const reduceEntityDataToMapData = (metric) => {
-        let geoData = fetch(props.map);
-        //let pointData = createGeoData(1000);
-        let pointData = props.entityData ? props.entityData : createEntityData(100000, props.map);
-        let start = Date.now();
-        
-        //let pointsInPolygons = pointInPolygonSearchCount(data, points);
-        let pointsInPolygons = entityInPolygonSearch(geoData, pointData);
-        //pointsInPolygons = reduceEntityDictToMetric(pointsInPolygons, 'a', DataMetrics.Sum);
-        pointsInPolygons = reduceEntityDictToMetricInPlace(pointsInPolygons, 'a', metric); 
-        
-        let delta = Date.now() - start
-        console.log(pointsInPolygons);
-        console.log(delta / 1000);
-
-        return {geoData, pointData, pointsInPolygons};
-    }
-
     const fetchMapData = async (metric) => { 
         return new Promise((resolve, reject) => {
-            resolve(reduceEntityDataToMapData(metric));
+            resolve(createDataMapData(100000, props.entityData, props.map, props.filter, metric))
         });
     };
 

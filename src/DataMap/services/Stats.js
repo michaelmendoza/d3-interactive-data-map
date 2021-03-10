@@ -1,4 +1,16 @@
 
+export const DataMetrics = {
+    Count : "Count",
+    Sum : 'Sum', 
+    Mean : 'Mean', 
+    StdDev : 'StdDev', 
+    Median : 'Median'
+}
+
+export const count = (x) => {
+    return x.length;
+}
+
 export const sum = (x) => {
     if(x.length === 0) return 0;
     return x.reduce(function(a, b) { return a + b; });
@@ -30,4 +42,21 @@ export const variance = (x) => {
 
 export const std = (x) => {
     return Math.sqrt(variance(x));
+}
+
+export const statsFactory = (data, metric) => {
+    switch(metric) {
+        case DataMetrics.Count:
+            return data.length;
+        case DataMetrics.Sum:
+            return sum(data);
+        case DataMetrics.Mean:
+            return mean(data);
+        case DataMetrics.Median:
+            return median(data);
+        case DataMetrics.StdDev:
+            return std(data);
+        default:
+            return 0;
+    }
 }

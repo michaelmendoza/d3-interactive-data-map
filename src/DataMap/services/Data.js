@@ -1,43 +1,18 @@
-import PolygonLookup from 'polygon-lookup';
 import * as Stats from './Stats';
 import * as StatsInPlace from './StatsInPlace';
 import { MapConstants } from '../components/MapConstants';
+import { random, randomCircle } from './Random';
+import { range } from './Utils';
+import { fetch } from './GeoJson';
+import { geoFilter } from './GeoFilter';
+import { entityInPolygonSearch } from './GeoSearch';
 
-export const DataMetrics = {
-    Count : "Count",
-    Sum : 'Sum', 
-    Mean : 'Mean', 
-    StdDev : 'StdDev', 
-    Median : 'Median'
-}
-
-export const random = (min, max) => {
-    return Math.random() * (max - min) + min;
-};
-
-export const randomInt = function(min, max) {		
-    return Math.round(Math.random() * (max - min) + min);
-}
-
-export const randomCircle = (center, radius) => {
-    let rRadius = random(0, radius);
-    let rAngle = random(-Math.PI, Math.PI)    
-    let x = rRadius * Math.cos(rAngle) + center[0];
-    let y = rRadius * Math.sin(rAngle) + center[1];
-    return [x, y]
-}
-
-export const range = (start, end) => {
-    const length = end - start;
-    return Array.from({ length }, (_, i) => start + i);
-}
-
-export const createGeoData = (N, geoName = 'Africa') => {
-    const geoCenter = MapConstants[geoName].center; 
-    const radius = MapConstants[geoName].radius; 
-    return Array.from({ length:N }, (_, i) => randomCircle(geoCenter, radius));
-}
-
+/**
+ * Creates Mock Entity Data of form { id, name, geo, attr, time }
+ * @param {number} N Number of Entities to Generate 
+ * @param {*} geoName GeoMap name
+ * @returns 
+ */
 export const createEntityData = (N, geoName = 'Africa') => {
     const geoCenter = MapConstants[geoName].center; 
     const radius = MapConstants[geoName].radius; 
@@ -61,100 +36,6 @@ export const createEntityData = (N, geoName = 'Africa') => {
     return data;
 }
 
-export const pointInPolygonSearchCount = (features, points) => {
-    let keys = features.features.map((item)=> {
-        return item.properties.name;
-    })
-    let dict = {}
-    keys.forEach((key)=> {
-        dict[key] = 0;
-    })
-
-    var lookup = new PolygonLookup(features);
-    points.forEach((point)=> {
-        var search = lookup.search(point[0], point[1]);
-        if(search)
-            dict[search.properties.name] += 1;
-    })
-
-    return dict;
-}
-
-export const entityInPolygonSearchCount = (features, points) => {
-    let keys = features.features.map((item)=> {
-        return item.properties.name;
-    })
-    let dict = {}
-    keys.forEach((key)=> {
-        dict[key] = 0;
-    })
-
-    var lookup = new PolygonLookup(features);
-    points.forEach((point)=> {
-        var search = lookup.search(point.geo[0], point.geo[1]);
-        if(search)
-            dict[search.properties.name] += 1;
-    })
-
-    return dict;
-}
-
-export const entityInPolygonSearch = (features, points) => {
-
-    // Create dictionary with country name as key, value is array of entities
-    let keys = features.features.map((item)=> {
-        return item.properties.name;
-    })
-    let dict = {}
-    keys.forEach((key)=> {
-        dict[key] = [];
-    })
-
-    // Do polygon look to find all polygons which contain a point feature 
-    var lookup = new PolygonLookup(features);
-    points.forEach((point)=> {
-        var search = lookup.search(point.geo[0], point.geo[1]);
-        if(search)
-            dict[search.properties.name].push(point);
-    })
-
-    return dict;
-}
-
-export const calculateStat = (data, metric) => {
-    switch(metric) {
-        case DataMetrics.Count:
-            return data.length;
-        case DataMetrics.Sum:
-            return Stats.sum(data);
-        case DataMetrics.Mean:
-            return Stats.mean(data);
-        case DataMetrics.Median:
-            return Stats.median(data);
-        case DataMetrics.StdDev:
-            return Stats.std(data);
-        default:
-            return 0;
-    }
-}
-
-export const calculateStatInPlace = (data, attribute, metric) => {
-    switch(metric) {
-        case DataMetrics.Count:
-            return data.length;
-        case DataMetrics.Sum:
-            return StatsInPlace.sum(data, attribute);
-        case DataMetrics.Mean:
-            return StatsInPlace.mean(data, attribute);
-        case DataMetrics.Median:
-            return StatsInPlace.median(data, attribute);
-        case DataMetrics.StdDev:
-            return StatsInPlace.std(data, attribute);
-        default:
-            return 0;
-    }
-}
-
 export const entityDataToDataArray = (data, attribute) => {
     const dataArray = [];
     data.forEach((item)=> {  
@@ -167,7 +48,7 @@ export const reduceEntityDictToMetric = (dict, attribute, metric) => {
     const keys = Object.keys(dict);
     let result = {}
     keys.forEach((key)=> {
-        result[key] = calculateStat( entityDataToDataArray(dict[key], attribute), metric);
+        result[key] = Stats.statsFactory(entityDataToDataArray(dict[key], attribute), metric);
     })
     return result;
 }
@@ -177,7 +58,47 @@ export const reduceEntityDictToMetricInPlace = (dict, attribute, metric) => {
     const keys = Object.keys(dict);
     let result = {}
     keys.forEach((key)=> {
-        result[key] = calculateStatInPlace(dict[key], attribute, metric);
+        result[key] = StatsInPlace.statsFactory(dict[key], attribute, metric);
     })
     return result;
+}
+
+/**
+ * Creates DataMap data from entityData or new generated entityData with entityCount
+ * @param {*} entityCount Entity count
+ * @param {*} entityData Input entity data
+ * @param {*} map 
+ * @param {*} filter GeoJson with filter polygons
+ * @param {*} metric DataMetric for data reduction 
+ * @returns 
+ */
+export const createDataMapData = (entityCount, entityData, map, filter, metric) => {
+    let geoData = fetch(map);
+    let pointData = entityData ? entityData : createEntityData(entityCount, map);
+    pointData = geoFilter(pointData, filter);
+
+    let start = Date.now();
+    let pointsInPolygons = entityInPolygonSearch(geoData, pointData);
+    pointsInPolygons = reduceEntityDictToMetricInPlace(pointsInPolygons, 'a', metric); 
+    let delta = Date.now() - start
+    console.log(delta / 1000);
+
+    return { geoData, pointData, pointsInPolygons };
+}
+
+/**
+ * Creates DataMap data from entityData or new generated entityData with entityCount
+ * @param {*} entityCount Entity count
+ * @param {*} entityData Input entity data
+ * @param {*} map 
+ * @param {*} filter GeoJson with filter polygons
+ * @param {*} max Max number of data points to render
+ * @returns 
+ */
+export const createPointMapData = (entityCount, entityData, map, filter, max) => {
+        let geoData = fetch(map);
+        let pointData = entityData ? entityData : createEntityData(entityCount, map);
+        pointData = geoFilter(pointData, filter);
+        pointData = max ? pointData.filter((point, index)=> index < max ) : pointData;
+        return {geoData, pointData};
 }

@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { fetch } from '../services/GeoJson';
-import { createEntityData } from '../services/Data';
+import { createEntityData, createPointMapData } from '../services/Data';
 import Loader from './Loading/Loader';
 import '../styles/DataMap.scss';
 import { MapConstants } from './MapConstants';
@@ -27,21 +27,13 @@ const PointMap = (props) => {
         }
         fetch();
     }
-    
-    const reduceEntityDataToMapData = () => {
-        let geoData = fetch(props.map);
-        let pointData = props.entityData ? props.entityData : createEntityData(100000, props.map);
-        pointData = geoFilter(pointData, props.filter);
-        pointData = props.max ? pointData.filter((point, index)=> index < props.max ) : pointData;
-        return {geoData, pointData};
-    }
 
     const fetchMapData = async () => { 
         return new Promise((resolve, reject) => {
-            resolve(reduceEntityDataToMapData());
+            resolve(createPointMapData(100000, props.entityData, props.map, props.filter, props.max))
         });
     };
-
+    
     const { map, width, height} = props;
 
     return (

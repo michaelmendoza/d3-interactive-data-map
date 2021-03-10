@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { DataMetrics } from '../services/Data';
-
+import { DataMetrics } from '../services/Stats';
 
 const MetricSelect = (props) => {
 

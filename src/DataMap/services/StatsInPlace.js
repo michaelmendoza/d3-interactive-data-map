@@ -1,3 +1,4 @@
+import { DataMetrics } from "./Stats";
 
 const fn = (x, attr) => {
     return x.attr[attr];
@@ -36,4 +37,21 @@ export const variance = (x, attr) => {
 
 export const std = (x, attr) => {
     return Math.sqrt(variance(x, attr));
+}
+
+export const statsFactory = (data, attribute, metric) => {
+    switch(metric) {
+        case DataMetrics.Count:
+            return data.length;
+        case DataMetrics.Sum:
+            return sum(data, attribute);
+        case DataMetrics.Mean:
+            return mean(data, attribute);
+        case DataMetrics.Median:
+            return median(data, attribute);
+        case DataMetrics.StdDev:
+            return std(data, attribute);
+        default:
+            return 0;
+    }
 }

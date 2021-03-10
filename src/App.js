@@ -21,7 +21,7 @@ const reducer = (state, action) => {
 
 function App() {
 
-  const initialState = { continent:MapOptions.Africa, mapType: MapTypes.DataMap };
+  const initialState = { continent:MapOptions.World, mapType: MapTypes.DataMap };
   const [state, dispatch] = useReducer(reducer, initialState);
   console.log(MockFeatures().features);
 
@@ -43,7 +43,7 @@ function App() {
         </div>
         <div className="layout-row-center">
           {
-            state.mapType == MapTypes.DataMap ? <DataMap map={state.continent} width={500} height={500}></DataMap> : null
+            state.mapType == MapTypes.DataMap ? <DataMap map={state.continent} filter={MockFeatures()} width={500} height={500}></DataMap> : null
 
           }
           {
