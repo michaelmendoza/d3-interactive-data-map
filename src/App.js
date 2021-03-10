@@ -1,12 +1,13 @@
 import 'normalize.css';
-import { useState, useReducer } from 'react';
 import './App.scss';
+
+import { useReducer } from 'react';
 import MapSelect, { MapOptions } from './DataMap/components/MapSelect';
 import DataMap from './DataMap/components/DataMap';
 import PointMap from './DataMap/components/PointMap';
-import { MapTypes } from './DataMap/components/MapConstants';
 import FeatureMap from './DataMap/components/FeatureMap';
-import { MockFeatures } from './DataMap/services/Features';
+import { MapTypes } from './DataMap/components/MapConstants';
+import { MockFeatures } from './DataMap/services/MockFeatures';
 
 const reducer = (state, action) => {
   switch (action.type) {

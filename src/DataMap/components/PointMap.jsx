@@ -38,13 +38,13 @@ const PointMap = (props) => {
         
         <div className='point-map'> 
             { 
-                svgReady ? <MapGraphic data={mapData} map={map} width={width} height={height}></MapGraphic> : <Loader></Loader>
+                svgReady ? <MapSVG data={mapData} map={map} width={width} height={height}></MapSVG> : <Loader></Loader>
             }
         </div>
     )
 }
 
-const MapGraphic = (props) => {
+const MapSVG = (props) => {
     const d3Container = useRef(null);
     const mapContainer = useRef(null);
     const fillColor = "#4682b4"; //'#69b3a2'; 
@@ -148,48 +148,7 @@ const MapGraphic = (props) => {
                 .style('left', '0')
                 .style('pointer-events', 'none');
     
-            drawPoints(canvas.node(), pointData)
-
-            /*
-            // Data Points
-            let g = svg.append("g")
-            g.selectAll("circle")
-                .data(pointData)
-                .enter().append("circle")
-                .attr('r', pointRadius)
-                .attr('cx',function(d) { 
-                    let v = projection(d.geo)[0];
-                    return v;
-                })
-                .attr('cy',function(d) { return projection(d.geo)[1]})
-                .attr('opacity', 0.2)
-                .style("fill", fillColor2)
-                .style("stroke", strokeColor)
-                .on("mouseover",function(e, d) {
-                    d3.select(this)
-                        .style("fill", "gray")
-
-                    tooltip
-                        .style("left", (e.pageX) + "px")		
-                        .style("top", (e.pageY - 28) + "px")
-                        .transition()		
-                        .duration(200)		
-                        .style("opacity", .9)		
-                    
-                    let text = 'Name: ' + d.name + ' Geo:[' + d.geo[0].toFixed(2) + ', ' + d.geo[1].toFixed(2) + ']' +
-                        '\n a: ' + d.attr.a.toFixed(2) + ' b: ' + d.attr.b.toFixed(2) + 
-                        ' c: ' + d.attr.c.toFixed(2) + ' d: ' + d.attr.d.toFixed(2);
-                    tooltip.text(text);
-                })
-                .on("mouseout",function(d){
-                    d3.select(this)
-                        .style("fill", fillColor2)
-
-                    tooltip.transition()		
-                        .duration(500)		
-                        .style("opacity", 0); 
-                })
-        */
+            drawPoints(canvas.node(), pointData);
     }
 
     return (

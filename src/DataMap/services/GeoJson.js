@@ -1,4 +1,3 @@
-
 import countriesByContinent from '../json/country-by-continent.json';
 import countriesGeoJson from '../json/world.json';
 import usaGeoJson from '../json/world/counties-10m.json'; //https://github.com/topojson/us-atlas#us/10m.json

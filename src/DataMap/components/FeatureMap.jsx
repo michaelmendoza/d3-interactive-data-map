@@ -38,13 +38,13 @@ const FeatureMap = (props) => {
         
         <div className='point-map'> 
             { 
-                svgReady ? <MapGraphic data={mapData} features={features} map={map} width={width} height={height}></MapGraphic> : <Loader></Loader>
+                svgReady ? <MapSVG data={mapData} features={features} map={map} width={width} height={height}></MapSVG> : <Loader></Loader>
             }
         </div>
     )
 }
 
-const MapGraphic = (props) => {
+const MapSVG = (props) => {
     const d3Container = useRef(null);
     const mapContainer = useRef(null);
     const fillColor = "#4682b4"; //'#69b3a2'; 
