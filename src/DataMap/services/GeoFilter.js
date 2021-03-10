@@ -57,6 +57,6 @@ export const geoFilterByCircle = (entityArray, center, radius) => {
 export const geoFilterByBoundingBox = (entityArray, bbox) => {
     const { minX, minY, maxX, maxY } = bbox;
     return entityArray.filter((e)=> {
-        return minX <= e.geo[0] && e.geo[0] <= maxX && maxY <= e.geo[1] && e.geo[1] <= maxY;
+        return minX <= e.geo[0] && e.geo[0] <= maxX && minY <= e.geo[1] && e.geo[1] <= maxY;
     })
 }

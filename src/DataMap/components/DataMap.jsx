@@ -51,8 +51,6 @@ const MapSVG = (props) => {
     const d3Container = useRef(null);
     const fillColor = "#4682b4"; //'#69b3a2'; 
     const fillColor2 =  '#69b3a2'; //'#DB6F68'; //"#4682b4"; // #DB6F68
-    const strokeColor = '#222222'; 
-    const pointRadius = 3;
 
     useEffect(()=> {
         drawMap();
@@ -84,7 +82,7 @@ const MapSVG = (props) => {
             .rotate(MapConstants[props.map].rotate)
             .scale(MapConstants[props.map].scale);
 
-        if(props.map == MapOptions.USAStates || props.map == MapOptions.USACounties) {
+        if(props.map === MapOptions.USAStates || props.map === MapOptions.USACounties) {
             projection = d3.geoAlbers()
                 .scale(700)
                 .center([24, 38.7]);    

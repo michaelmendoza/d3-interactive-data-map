@@ -1,12 +1,10 @@
 import * as d3 from 'd3';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { fetch } from '../services/GeoJson';
-import { createEntityData, createPointMapData } from '../services/Data';
+import React, { useEffect, useRef, useState } from 'react';
+import {  createPointMapData } from '../services/Data';
 import Loader from './Loading/Loader';
 import '../styles/DataMap.scss';
 import { MapConstants } from './MapConstants';
 import { MapOptions } from './MapSelect';
-import { geoFilter } from '../services/GeoFilter';
 
 const PointMap = (props) => {
 
@@ -33,7 +31,7 @@ const PointMap = (props) => {
             resolve(createPointMapData(100000, props.entityData, props.map, props.filter, props.max))
         });
     };
-    
+
     const { map, width, height} = props;
 
     return (
@@ -78,7 +76,7 @@ const MapGraphic = (props) => {
             .rotate(MapConstants[props.map].rotate)
             .scale(MapConstants[props.map].scale);
 
-        if(props.map == MapOptions.USAStates || props.map == MapOptions.USACounties) {
+        if(props.map === MapOptions.USAStates || props.map === MapOptions.USACounties) {
             projection = d3.geoAlbers()
                 .scale(700)
                 .center([24, 38.7]);    

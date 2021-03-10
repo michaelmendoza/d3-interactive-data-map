@@ -5,7 +5,7 @@ import MapSelect, { MapOptions } from './DataMap/components/MapSelect';
 import DataMap from './DataMap/components/DataMap';
 import PointMap from './DataMap/components/PointMap';
 import { MapTypes } from './DataMap/components/MapConstants';
-import SimpleMap from './DataMap/components/SimpleMap';
+import FeatureMap from './DataMap/components/FeatureMap';
 import { MockFeatures } from './DataMap/services/Features';
 
 const reducer = (state, action) => {
@@ -43,14 +43,14 @@ function App() {
         </div>
         <div className="layout-row-center">
           {
-            state.mapType == MapTypes.DataMap ? <DataMap map={state.continent} filter={MockFeatures()} width={500} height={500}></DataMap> : null
+            state.mapType === MapTypes.DataMap ? <DataMap map={state.continent} filter={MockFeatures()} width={500} height={500}></DataMap> : null
 
           }
           {
-            state.mapType == MapTypes.PointMap ? <PointMap map={state.continent} filter={MockFeatures()} max={10000} width={500} height={500}></PointMap> : null
+            state.mapType === MapTypes.PointMap ? <PointMap map={state.continent} filter={MockFeatures()} max={10000} width={500} height={500}></PointMap> : null
           }
           {
-            state.mapType == MapTypes.SimpleMap ? <SimpleMap map={state.continent} features={MockFeatures().features} width={500} height={500}></SimpleMap> : null
+            state.mapType === MapTypes.SimpleMap ? <FeatureMap map={state.continent} features={MockFeatures().features} width={500} height={500}></FeatureMap> : null
 
           }
         </div>

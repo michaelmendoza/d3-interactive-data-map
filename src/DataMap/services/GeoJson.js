@@ -7,9 +7,9 @@ import * as topojson from 'topojson';
 const cache = {};
 
 export function fetch(continent = "Africa") {    
-    if(continent == "USA Counties")
+    if(continent === "USA Counties")
         return getUSACountyGeoJson();
-    if(continent == "USA States")
+    if(continent === "USA States")
         return getUSAStatesGeoJson();
     
     let filteredGeoJsons = filterCountryByContinent(continent, countriesByContinent, countriesGeoJson);
@@ -46,9 +46,9 @@ const filterCountryByContinent = (continent, countriesByContinent, countriesGeoJ
     
     // Filter geoJson by continent
     let features = countriesGeoJson.features.filter((item) => {
-        return GetContinentFromCountry(item.properties.name) == continent;
+        return GetContinentFromCountry(item.properties.name) === continent;
     })
-    features = continent == "World" ? countriesGeoJson.features : features;
+    features = continent === "World" ? countriesGeoJson.features : features;
 
     // Returns a filtered geoJson 
     return { 

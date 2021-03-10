@@ -1,12 +1,12 @@
 import * as d3 from 'd3';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { fetch } from '../services/GeoJson';
 import Loader from './Loading/Loader';
 import '../styles/DataMap.scss';
 import { MapConstants } from './MapConstants';
 import { MapOptions } from './MapSelect';
 
-const SimpleMap = (props) => {
+const FeatureMap = (props) => {
 
     const [mapData, setMapData] = useState(null);
     const [svgReady, setSvgReady] = useState(false);
@@ -26,14 +26,9 @@ const SimpleMap = (props) => {
         fetch();
     }
     
-    const reduceEntityDataToMapData = () => {
-        let geoData = fetch(props.map);
-        return {geoData};
-    }
-
     const fetchMapData = async () => { 
         return new Promise((resolve, reject) => {
-            resolve(reduceEntityDataToMapData());
+            resolve({geoData:fetch(props.map)});
         });
     };
 
@@ -78,7 +73,7 @@ const MapGraphic = (props) => {
             .rotate(MapConstants[props.map].rotate)
             .scale(MapConstants[props.map].scale);
 
-        if(props.map == MapOptions.USAStates || props.map == MapOptions.USACounties) {
+        if(props.map === MapOptions.USAStates || props.map === MapOptions.USACounties) {
             projection = d3.geoAlbers()
                 .scale(700)
                 .center([24, 38.7]);    
@@ -141,4 +136,4 @@ const MapGraphic = (props) => {
     )
 }
 
-export default SimpleMap;
+export default FeatureMap;
