@@ -6,6 +6,7 @@ import Loader from './Loading/Loader';
 import '../styles/DataMap.scss';
 import { MapConstants } from './MapConstants';
 import { MapOptions } from './MapSelect';
+import { geoFilter } from '../services/GeoFilter';
 
 const PointMap = (props) => {
 
@@ -30,6 +31,7 @@ const PointMap = (props) => {
     const reduceEntityDataToMapData = () => {
         let geoData = fetch(props.map);
         let pointData = props.entityData ? props.entityData : createEntityData(100000, props.map);
+        pointData = geoFilter(pointData, props.filter);
         pointData = props.max ? pointData.filter((point, index)=> index < props.max ) : pointData;
         return {geoData, pointData};
     }
@@ -87,8 +89,7 @@ const MapGraphic = (props) => {
         if(props.map == MapOptions.USAStates || props.map == MapOptions.USACounties) {
             projection = d3.geoAlbers()
                 .scale(700)
-                .center([24, 38.7]);
-                
+                .center([24, 38.7]);    
         }
 
         //Define path generator

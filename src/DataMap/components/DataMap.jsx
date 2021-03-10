@@ -124,7 +124,7 @@ const MapSVG = (props) => {
             .style("stroke-dasharray", ("3, 3"))
             .style("fill", (d)=> { return color(pointsInPolygons[d.properties.name]); }) //"steelblue")
             .style("stroke", "white")
-            .style("stroke-width", 0.25)
+            .style("stroke-width", 0.1)
             .style("opacity", 0.8)
             .on("mouseover",function(e, d) {
                 d3.select(this)

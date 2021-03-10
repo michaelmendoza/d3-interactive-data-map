@@ -4,10 +4,9 @@ import './App.scss';
 import MapSelect, { MapOptions } from './DataMap/components/MapSelect';
 import DataMap from './DataMap/components/DataMap';
 import PointMap from './DataMap/components/PointMap';
-import StateSelect from './DataMap/components/StateSelect';
 import { MapTypes } from './DataMap/components/MapConstants';
-
-
+import SimpleMap from './DataMap/components/SimpleMap';
+import { MockFeatures } from './DataMap/services/Features';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -24,6 +23,7 @@ function App() {
 
   const initialState = { continent:MapOptions.Africa, mapType: MapTypes.DataMap };
   const [state, dispatch] = useReducer(reducer, initialState);
+  console.log(MockFeatures().features);
 
   return (
     <div className="App">
@@ -34,6 +34,8 @@ function App() {
         <div>
           <button onClick={() => { dispatch({type:"updateMapType", mapType:MapTypes.DataMap})} }> Data Map </button>
           <button onClick={() => { dispatch({type:"updateMapType", mapType:MapTypes.PointMap})} }> Point Map </button>
+          <button onClick={() => { dispatch({type:"updateMapType", mapType:MapTypes.SimpleMap})} }> Feature Map </button>
+
         </div>
 
         <div> 
@@ -45,7 +47,11 @@ function App() {
 
           }
           {
-            state.mapType == MapTypes.PointMap ? <PointMap map={state.continent} max={1000} width={500} height={500}></PointMap> : null
+            state.mapType == MapTypes.PointMap ? <PointMap map={state.continent} filter={MockFeatures()} max={10000} width={500} height={500}></PointMap> : null
+          }
+          {
+            state.mapType == MapTypes.SimpleMap ? <SimpleMap map={state.continent} features={MockFeatures().features} width={500} height={500}></SimpleMap> : null
+
           }
         </div>
 
