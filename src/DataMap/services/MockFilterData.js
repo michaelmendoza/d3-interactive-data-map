@@ -1,8 +1,8 @@
 
-export const MockFeatures = () => {
-
+export const MockFilterData = () => {
+  
     // Mock Features
-    const GeoJson = {
+    const geoJson = {
         "type": "FeatureCollection",
         "features": [
           {
@@ -75,5 +75,8 @@ export const MockFeatures = () => {
         ]
       }
 
-      return GeoJson;
+      const circle = { center:[-111.8408203125, 40.74725696280421], radius: 100 } 
+      const bbox = { minX:-119.88281249999999, minY:34.59704151614417, maxX:-109.1162109375 , maxY:42.09822241118974 }
+
+      return { geoJson, circle, bbox };
 }

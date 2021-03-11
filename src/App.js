@@ -7,7 +7,7 @@ import DataMap from './DataMap/components/DataMap';
 import PointMap from './DataMap/components/PointMap';
 import FeatureMap from './DataMap/components/FeatureMap';
 import { MapTypes } from './DataMap/components/MapConstants';
-import { MockFeatures } from './DataMap/services/MockFeatures';
+import { MockFilterData } from './DataMap/services/MockFilterData';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -24,7 +24,7 @@ function App() {
 
   const initialState = { continent:MapOptions.World, mapType: MapTypes.DataMap };
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log(MockFeatures().features);
+  const filter = MockFilterData();
 
   return (
     <div className="App">
@@ -44,14 +44,14 @@ function App() {
         </div>
         <div className="layout-row-center">
           {
-            state.mapType === MapTypes.DataMap ? <DataMap map={state.continent} filter={MockFeatures()} width={500} height={500}></DataMap> : null
+            state.mapType === MapTypes.DataMap ? <DataMap map={state.continent} filter={filter} width={500} height={500}></DataMap> : null
 
           }
           {
-            state.mapType === MapTypes.PointMap ? <PointMap map={state.continent} filter={MockFeatures()} max={10000} width={500} height={500}></PointMap> : null
+            state.mapType === MapTypes.PointMap ? <PointMap map={state.continent} filter={filter} max={10000} width={500} height={500}></PointMap> : null
           }
           {
-            state.mapType === MapTypes.SimpleMap ? <FeatureMap map={state.continent} features={MockFeatures().features} width={500} height={500}></FeatureMap> : null
+            state.mapType === MapTypes.SimpleMap ? <FeatureMap map={state.continent} features={filter.geoJson.features} width={500} height={500}></FeatureMap> : null
 
           }
         </div>
