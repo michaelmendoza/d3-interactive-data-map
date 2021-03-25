@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
-import {  createPointMapData } from '../services/Data';
+import { createPointMapData } from '../services/Data';
 import Loader from './Loading/Loader';
 import '../styles/DataMap.scss';
 import { MapConstants } from './MapConstants';
@@ -45,6 +45,7 @@ const PointMap = (props) => {
 }
 
 const MapSVG = (props) => {
+    const self = useRef({ svg: null });
     const d3Container = useRef(null);
     const mapContainer = useRef(null);
     const fillColor = "#4682b4"; //'#69b3a2'; 
@@ -53,14 +54,20 @@ const MapSVG = (props) => {
     const pointRadius = 3;
 
     useEffect(()=> {
-        drawMap();
+        initMap();
+        updateMap();
     })
 
-    const drawMap = () => {
-        const {geoData, pointData} = props.data;
+    const initMap = () => {
+        if(self.current.svg) return;
 
         var svg = d3.select(d3Container.current);
         var divCanvas = d3.select(mapContainer.current);
+
+        var canvas = divCanvas.append('canvas')  
+            .style('position', 'absolute')
+            .style('left', '0')
+            .style('pointer-events', 'none');
 
         // Define the div for the tooltip
         var tooltip = d3.select("body")
@@ -68,6 +75,13 @@ const MapSVG = (props) => {
             .attr("class", "tooltip")				
             .style("opacity", 0)
             .text("");
+
+        self.current = { svg, canvas, tooltip };
+    }
+
+    const updateMap = () => {
+        const { svg, canvas, tooltip  } = self.current
+        const { geoData, pointData } = props.data;
 
         //Define map projection
         var projection = d3.geoMercator()
@@ -86,8 +100,6 @@ const MapSVG = (props) => {
         var path = d3.geoPath()
             .projection(projection);
         
-        console.log(geoData.features);
-
         let mapG = svg.append("g")
         mapG.selectAll("path")
             .data(geoData.features)
@@ -130,6 +142,9 @@ const MapSVG = (props) => {
                 context.globalAlpha = 0.8;
                 context.setTransform(scale, 0, 0, scale, 0, 0);
                 
+                // Clear the canvas from previous drawing
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
                 pointData.forEach((d) => {
                     context.beginPath();
                     
@@ -143,11 +158,7 @@ const MapSVG = (props) => {
                     context.stroke()
                 })
             }
-            var canvas = divCanvas.append('canvas')  
-                .style('position', 'absolute')
-                .style('left', '0')
-                .style('pointer-events', 'none');
-    
+            
             drawPoints(canvas.node(), pointData);
     }
 

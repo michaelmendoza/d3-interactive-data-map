@@ -12,6 +12,8 @@ const milesToDeg = ( 1.0 / 60.0 );
  * @returns Filtered entity array
  */
 export const geoFilter = (entityArray, filter) => {
+    if(!filter) return entityArray;
+    
     let filteredArray;
     filteredArray = geoFilterByBoundingBox(entityArray, filter.bbox);
     filteredArray = geoFilterByCircle(filteredArray, filter.circle);
